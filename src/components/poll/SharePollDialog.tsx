@@ -38,8 +38,8 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
   useEffect(() => {
     if (open) {
       QRCode.toDataURL(pollURL, {
-        width: 200,
-        margin: 2,
+        width: 180,
+        margin: 1,
         color: {
           dark: "#000000",
           light: "#FFFFFF",
@@ -101,20 +101,20 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center space-y-4">
-          <div className="mx-auto p-3 bg-success/10 rounded-full w-fit">
+      <DialogContent className="w-[95vw] max-w-md mx-auto p-4 sm:p-6 overflow-y-auto max-h-[90vh]">
+        <DialogHeader className="text-center space-y-2 sm:space-y-4">
+          <div className="mx-auto p-2 sm:p-3 bg-success/10 rounded-full w-fit">
             <Share2 className="h-8 w-8 text-success" />
           </div>
-          <DialogTitle className="text-2xl">Share Your Poll</DialogTitle>
+          <DialogTitle className="text-xl sm:text-2xl">Share Your Poll</DialogTitle>
           <p className="text-muted-foreground">
             Get your poll out there and start collecting votes
           </p>
         </DialogHeader>
 
-        <div className="space-y-6 mt-6">
+        <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
           {/* Poll Info */}
-          <Card className="p-4">
+          <Card className="p-3 sm:p-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-lg truncate">{poll.title}</h3>
@@ -134,7 +134,7 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
           {/* Share Link */}
           <div className="space-y-2">
             <Label className="text-base font-semibold">Share Link</Label>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <Input 
                 value={pollURL} 
                 readOnly 
@@ -161,13 +161,13 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
           <div className="space-y-4">
             <Label className="text-base font-semibold">QR Code</Label>
             <Card>
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 sm:p-6 text-center">
                 {qrCodeDataUrl ? (
                   <div className="space-y-4">
                     <img 
                       src={qrCodeDataUrl} 
                       alt="Poll QR Code" 
-                      className="mx-auto rounded-lg border"
+                      className="mx-auto rounded-lg border w-full max-w-[180px] sm:max-w-[200px]"
                     />
                     <p className="text-sm text-muted-foreground">
                       Scan to vote instantly
@@ -183,7 +183,7 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <Button
               variant="outline"
               onClick={handleDownloadQR}
@@ -191,14 +191,16 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
               className="flex items-center space-x-2"
             >
               <QrCode className="h-4 w-4" />
-              <span>Download QR</span>
+              <span className="hidden xs:inline">Download QR</span>
+              <span className="xs:hidden">QR</span>
             </Button>
             <Button
               onClick={handleShareNative}
               className="flex items-center space-x-2"
             >
               <Share2 className="h-4 w-4" />
-              <span>Share Poll</span>
+              <span className="hidden xs:inline">Share Poll</span>
+              <span className="xs:hidden">Share</span>
             </Button>
           </div>
 
@@ -210,7 +212,8 @@ const SharePollDialog = ({ open, onOpenChange, poll }: SharePollDialogProps) => 
               onClick={() => window.open(pollURL, "_blank")}
             >
               <ExternalLink className="h-4 w-4" />
-              <span>Preview Poll Page</span>
+              <span className="hidden xs:inline">Preview Poll Page</span>
+              <span className="xs:hidden">Preview</span>
             </Button>
           </div>
         </div>
