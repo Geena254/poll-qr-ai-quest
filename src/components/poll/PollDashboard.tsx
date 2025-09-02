@@ -9,6 +9,8 @@ import {
 import CreatePollDialog from "./CreatePollDialog";
 import PollResultsDialog from "./PollResultsDialog";
 import SharePollDialog from "./SharePollDialog";
+import UserProfile from "@/components/auth/UserProfile";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Poll {
   id: string;
@@ -105,17 +107,22 @@ const PollDashboard = ({ onLogout }: PollDashboardProps) => {
                 <Plus className="h-4 w-4" />
                 <span>Create Poll</span>
               </Button>
-              <Button variant="ghost" onClick={onLogout} className="flex items-center space-x-2">
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
             </div>
           </div>
         </div>
       </header>
+      
+      {/* Dashboard Content */}
+      <div className="container mx-auto px-4 py-8">
+        <Tabs defaultValue="polls" className="mb-8">
+          <TabsList>
+            <TabsTrigger value="polls">My Polls</TabsTrigger>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+          </TabsList>
+          <TabsContent value="polls">
 
       {/* Dashboard Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8"/>
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
@@ -266,7 +273,14 @@ const PollDashboard = ({ onLogout }: PollDashboardProps) => {
             </div>
           )}
         </div>
-      </main>
+          </TabsContent>
+          <TabsContent value="profile">
+            <div className="max-w-md mx-auto">
+              <UserProfile onLogout={onLogout} />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* Dialogs */}
       <CreatePollDialog

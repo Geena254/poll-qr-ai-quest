@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Vote, User, Mail, Lock, ArrowRight } from "lucide-react";
+import { Vote, User, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuthDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: "login" | "register";
-  onSuccess: () => void;
+  onSuccess: (isRegistration?: boolean) => void;
 }
 
 const AuthDialog = ({ open, onOpenChange, mode, onSuccess }: AuthDialogProps) => {
@@ -22,23 +24,54 @@ const AuthDialog = ({ open, onOpenChange, mode, onSuccess }: AuthDialogProps) =>
     email: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      if (currentMode === "login") {
+        const { error } = await signIn(formData.email, formData.password);
+        if (error) throw error;
+        
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+        
+        onSuccess(false); // Not a registration, close dialog and proceed to dashboard
+      } else {
+        const { error } = await signUp(formData.email, formData.password, formData.name);
+        if (error) throw error;
+        
+        toast({
+          title: "Account created!",
+          description: "Your account has been created successfully. Please sign in.",
+        });
+        
+        // Save the email for login convenience
+        const registeredEmail = formData.email;
+        
+        // Switch to login mode after successful registration
+        setCurrentMode("login");
+        setFormData({
+          name: "",
+          email: registeredEmail,
+          password: ""
+        });
+        
+        // Call onSuccess with isRegistration=true to keep dialog open
+        onSuccess(true);
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred during authentication");
+    } finally {
       setIsLoading(false);
-      toast({
-        title: currentMode === "login" ? "Welcome back!" : "Account created!",
-        description: currentMode === "login" 
-          ? "You have successfully signed in." 
-          : "Your account has been created successfully.",
-      });
-      onSuccess();
-    }, 1500);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -116,6 +149,13 @@ const AuthDialog = ({ open, onOpenChange, mode, onSuccess }: AuthDialogProps) =>
               />
             </div>
 
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            
             <Button 
               type="submit" 
               className="w-full" 

@@ -1,8 +1,19 @@
-# Welcome to your Lovable project
+# PollShare - Interactive Polling App
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/c26fc20f-73a6-437e-814f-3c47091a80cf
+
+## Authentication Setup
+
+This project uses Supabase for authentication. To set up authentication:
+
+1. Create a Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project in Supabase
+3. Enable Email authentication in Authentication > Providers
+4. Copy your project URL and anon key from Project Settings > API
+5. Create a `.env` file in the project root (copy from `.env.example`)
+6. Add your Supabase URL and anon key to the `.env` file
 
 ## How can I edit this code?
 

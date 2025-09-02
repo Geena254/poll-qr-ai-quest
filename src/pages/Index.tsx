@@ -4,24 +4,36 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Users, BarChart3, QrCode, Vote, ArrowRight, CheckCircle, Share2 } from "lucide-react";
 import AuthDialog from "@/components/auth/AuthDialog";
 import PollDashboard from "@/components/poll/PollDashboard";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, loading, signOut } = useAuth();
 
   const handleAuth = (mode: "login" | "register") => {
     setAuthMode(mode);
     setShowAuthDialog(true);
   };
 
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setShowAuthDialog(false);
+  const handleAuthSuccess = (isRegistration = false) => {
+    // Only close the dialog if it's a successful login, not registration
+    if (!isRegistration) {
+      setShowAuthDialog(false);
+    }
   };
 
-  if (isAuthenticated) {
-    return <PollDashboard onLogout={() => setIsAuthenticated(false)} />;
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <PollDashboard onLogout={() => signOut()} />;
   }
 
   return (
